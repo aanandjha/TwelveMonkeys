@@ -28,15 +28,23 @@
 
 package com.twelvemonkeys.imageio.plugins.tiff;
 
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.io.LittleEndianDataInputStream;
-import com.twelvemonkeys.io.LittleEndianDataOutputStream;
-import org.junit.Test;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteOrder;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.io.LittleEndianDataInputStream;
+import com.twelvemonkeys.io.LittleEndianDataOutputStream;
 
 /**
  * HorizontalDeDifferencingStreamTest
@@ -193,7 +201,7 @@ public class HorizontalDeDifferencingStreamTest {
     @Test
     public void testRead1SPP32BPS() throws IOException {
         // 1 sample per pixel, 32 bits per sample (gray)
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(16);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(16);
         DataOutput dataOut = new DataOutputStream(out);
         dataOut.writeInt(0x00000000);
         dataOut.writeInt(305419896);
@@ -216,7 +224,7 @@ public class HorizontalDeDifferencingStreamTest {
     @Test
     public void testRead1SPP32BPSLittleEndian() throws IOException {
         // 1 sample per pixel, 32 bits per sample (gray)
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(16);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(16);
         DataOutput dataOut = new LittleEndianDataOutputStream(out);
         dataOut.writeInt(0x00000000);
         dataOut.writeInt(305419896);
@@ -239,7 +247,7 @@ public class HorizontalDeDifferencingStreamTest {
     @Test
     public void testRead1SPP64BPS() throws IOException {
         // 1 sample per pixel, 64 bits per sample (gray)
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(32);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(32);
         DataOutput dataOut = new DataOutputStream(out);
         dataOut.writeLong(0x00000000);
         dataOut.writeLong(81985529216486895L);
@@ -262,7 +270,7 @@ public class HorizontalDeDifferencingStreamTest {
     @Test
     public void testRead1SPP64BPSLittleEndian() throws IOException {
         // 1 sample per pixel, 64 bits per sample (gray)
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(32);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(32);
         DataOutput dataOut = new LittleEndianDataOutputStream(out);
         dataOut.writeLong(0x00000000);
         dataOut.writeLong(81985529216486895L);
@@ -350,7 +358,7 @@ public class HorizontalDeDifferencingStreamTest {
 
     @Test
     public void testRead3SPP16BPS() throws IOException {
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(24);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(24);
         DataOutput dataOut = new DataOutputStream(out);
         dataOut.writeShort(0x0000);
         dataOut.writeShort(0x0000);
@@ -415,7 +423,7 @@ public class HorizontalDeDifferencingStreamTest {
 
     @Test
     public void testRead3SPP16BPSLittleEndian() throws IOException {
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(24);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(24);
         DataOutput dataOut = new LittleEndianDataOutputStream(out);
         dataOut.writeShort(0x0000);
         dataOut.writeShort(0x0000);

@@ -28,18 +28,6 @@
 
 package com.twelvemonkeys.contrib.tiff;
 
-import com.twelvemonkeys.contrib.tiff.TIFFUtilities.TIFFExtension;
-import com.twelvemonkeys.imageio.plugins.tiff.TIFFMedataFormat;
-import com.twelvemonkeys.io.FileUtil;
-import org.junit.Assert;
-import org.junit.Test;
-import org.w3c.dom.Node;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
-import javax.xml.xpath.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -49,6 +37,24 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.w3c.dom.Node;
+
+import com.twelvemonkeys.contrib.tiff.TIFFUtilities.TIFFExtension;
+import com.twelvemonkeys.imageio.plugins.tiff.TIFFMedataFormat;
+import com.twelvemonkeys.io.FileUtilPureJava;
 
 /**
  * TIFFUtilitiesTest
@@ -73,16 +79,16 @@ public class TIFFUtilitiesTest {
 
         byte[] data;
 
-        data = FileUtil.read(stream1);
-        FileUtil.write(file1, data);
+        data = FileUtilPureJava.read(stream1);
+        FileUtilPureJava.write(file1, data);
         stream1.close();
 
-        data = FileUtil.read(stream2);
-        FileUtil.write(file2, data);
+        data = FileUtilPureJava.read(stream2);
+        FileUtilPureJava.write(file2, data);
         stream2.close();
 
-        data = FileUtil.read(stream3);
-        FileUtil.write(file3, data);
+        data = FileUtilPureJava.read(stream3);
+        FileUtilPureJava.write(file3, data);
         stream3.close();
 
         List<File> input = Arrays.asList(file1, file2, file3);
@@ -104,8 +110,8 @@ public class TIFFUtilitiesTest {
     public void testSplit() throws IOException {
         InputStream inputStream = getClassLoaderResource("/contrib/tiff/multipage.tif").openStream();
         File inputFile = File.createTempFile("imageiotest", "tif");
-        byte[] data = FileUtil.read(inputStream);
-        FileUtil.write(inputFile, data);
+        byte[] data = FileUtilPureJava.read(inputStream);
+        FileUtilPureJava.write(inputFile, data);
         inputStream.close();
 
         File outputDirectory = Files.createTempDirectory("imageio").toFile();
@@ -133,8 +139,8 @@ public class TIFFUtilitiesTest {
 
         InputStream inputStream = getClassLoaderResource("/contrib/tiff/multipage.tif").openStream();
         File inputFile = File.createTempFile("imageiotest", ".tif");
-        byte[] data = FileUtil.read(inputStream);
-        FileUtil.write(inputFile, data);
+        byte[] data = FileUtilPureJava.read(inputStream);
+        FileUtilPureJava.write(inputFile, data);
         inputStream.close();
 
         XPath xPath = XPathFactory.newInstance().newXPath();
@@ -181,8 +187,8 @@ public class TIFFUtilitiesTest {
     public void testApplyOrientation() throws IOException {
         InputStream inputStream = getClassLoaderResource("/contrib/tiff/multipage.tif").openStream();
         File inputFile = File.createTempFile("imageiotest", "tif");
-        byte[] data = FileUtil.read(inputStream);
-        FileUtil.write(inputFile, data);
+        byte[] data = FileUtilPureJava.read(inputStream);
+        FileUtilPureJava.write(inputFile, data);
         inputStream.close();
 
         BufferedImage image = ImageIO.read(inputFile);

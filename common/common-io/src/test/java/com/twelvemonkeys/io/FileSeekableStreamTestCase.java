@@ -28,7 +28,7 @@ public class FileSeekableStreamTestCase extends SeekableInputStreamAbstractTestC
         temp.deleteOnExit();
         OutputStream os = new FileOutputStream(temp);
         try {
-            FileUtil.copy(pStream, os);
+            FileUtilPureJava.copy(pStream, os);
         }
         finally {
             os.close();
@@ -60,7 +60,7 @@ public class FileSeekableStreamTestCase extends SeekableInputStreamAbstractTestC
         FileSeekableStream stream = new FileSeekableStream(raf);
 
         try {
-            FileUtil.read(stream); // Read until EOF
+            FileUtilPureJava.read(stream); // Read until EOF
 
             assertEquals("EOF not reached (test case broken)", -1, stream.read());
             assertFalse("Underlying stream closed before close", closed[0]);

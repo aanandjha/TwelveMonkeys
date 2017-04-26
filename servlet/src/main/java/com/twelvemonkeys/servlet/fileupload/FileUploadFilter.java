@@ -28,20 +28,21 @@
 
 package com.twelvemonkeys.servlet.fileupload;
 
-import com.twelvemonkeys.servlet.GenericFilter;
-import com.twelvemonkeys.servlet.ServletUtil;
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.StringUtil;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.File;
-import java.net.URL;
-import java.net.MalformedURLException;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.StringUtil;
+import com.twelvemonkeys.servlet.GenericFilter;
+import com.twelvemonkeys.servlet.ServletUtil;
 
 /**
  * A servlet {@code Filter} for processing HTTP file upload requests, as
@@ -70,7 +71,7 @@ public class FileUploadFilter extends GenericFilter {
         if (!StringUtil.isEmpty(uploadDirParam)) {
             try {
                 URL uploadDirURL = getServletContext().getResource(uploadDirParam);
-                uploadDir = FileUtil.toFile(uploadDirURL);
+                uploadDir = FileUtilPureJava.toFile(uploadDirURL);
             }
             catch (MalformedURLException e) {
                 throw new ServletException(e.getMessage(), e);

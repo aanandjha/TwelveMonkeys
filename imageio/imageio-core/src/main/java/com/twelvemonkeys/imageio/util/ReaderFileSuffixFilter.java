@@ -28,15 +28,16 @@
 
 package com.twelvemonkeys.imageio.util;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.StringUtil;
-
-import javax.imageio.ImageIO;
-import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.swing.filechooser.FileFilter;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.StringUtil;
 
 /**
  * ReaderFileSuffixFilter
@@ -65,7 +66,7 @@ public final class ReaderFileSuffixFilter extends FileFilter implements java.io.
         }
 
         // See if we have an ImageReader for this suffix
-        String suffix = FileUtil.getExtension(pFile);
+        String suffix = FileUtilPureJava.getExtension(pFile);
 
         return !StringUtil.isEmpty(suffix) && hasReaderForSuffix(suffix);
     }

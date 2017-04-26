@@ -26,10 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.twelvemonkeys.io;
+package org.common.io.external;
 
 import java.io.*;
 import java.util.Arrays;
+
+import com.twelvemonkeys.io.LittleEndianDataInputStream;
 
 /**
  * A {@code File} implementation that resolves the Windows {@code .lnk} files as symbolic links.

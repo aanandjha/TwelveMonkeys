@@ -59,19 +59,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.twelvemonkeys.imageio.plugins.pict;
 
-import com.twelvemonkeys.imageio.ImageWriterBase;
-import com.twelvemonkeys.imageio.util.IIOUtil;
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.io.enc.EncoderStream;
-import com.twelvemonkeys.io.enc.PackBitsEncoder;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import javax.imageio.*;
+import javax.imageio.IIOException;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
-import java.awt.color.ColorSpace;
-import java.awt.image.*;
-import java.io.*;
+
+import com.twelvemonkeys.imageio.ImageWriterBase;
+import com.twelvemonkeys.imageio.util.IIOUtil;
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.io.enc.EncoderStream;
+import com.twelvemonkeys.io.enc.PackBitsEncoder;
 
 /**
  * Writer for Apple Mac Paint Picture (PICT) format.
@@ -243,7 +261,7 @@ public class PICTImageWriter extends ImageWriterBase {
     private void writePICTData(int x, int y, int w, int h, ColorModel model,
                                byte[] pixels, int off, int scansize) throws IOException {
 
-        ByteArrayOutputStream bytes = new FastByteArrayOutputStream(scanlineBytes.length / 2);
+        ByteArrayOutputStream bytes = new FastByteArrayOutputStreamPureJava(scanlineBytes.length / 2);
 
         int components = model.getNumComponents();
 
@@ -300,7 +318,7 @@ public class PICTImageWriter extends ImageWriterBase {
     private void writePICTData(int x, int y, int w, int h, ColorModel model,
                                int[] pixels, int off, int scansize) throws IOException {
 
-        ByteArrayOutputStream bytes = new FastByteArrayOutputStream(scanlineBytes.length / 2);
+        ByteArrayOutputStream bytes = new FastByteArrayOutputStreamPureJava(scanlineBytes.length / 2);
 
         // TODO: Clean up, as we only have complete scanlines
 

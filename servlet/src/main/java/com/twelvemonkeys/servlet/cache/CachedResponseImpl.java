@@ -28,13 +28,17 @@
 
 package com.twelvemonkeys.servlet.cache;
 
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.lang.Validate;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.lang.Validate;
 
 /**
  * CachedResponseImpl
@@ -57,7 +61,7 @@ class CachedResponseImpl implements CachedResponse {
         status = pStatus;
         headers = Validate.notNull(pHeaders, "headers");
         headersSize = pHeaderSize;
-        content = new FastByteArrayOutputStream(pContent);
+        content = new FastByteArrayOutputStreamPureJava(pContent);
     }
 
     public int getStatus() {

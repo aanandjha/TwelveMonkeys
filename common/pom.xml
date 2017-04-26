@@ -18,6 +18,7 @@
         <module>common-lang</module>
         <module>common-io</module>
         <module>common-image</module>
+        <module>common-io-external</module>
     </modules>
 
     <dependencyManagement>

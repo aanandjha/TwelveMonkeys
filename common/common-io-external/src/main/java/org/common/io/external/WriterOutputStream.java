@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.twelvemonkeys.io;
+package org.common.io.external;
 
+import com.twelvemonkeys.io.NullOutputStream;
 import com.twelvemonkeys.lang.DateUtil;
 
 import java.io.*;

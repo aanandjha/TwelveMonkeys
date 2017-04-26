@@ -28,15 +28,15 @@
 
 package com.twelvemonkeys.servlet.cache;
 
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.net.HTTPUtil;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.net.HTTPUtil;
 
 /**
  * WritableCachedResponseImpl
@@ -139,10 +139,10 @@ class WritableCachedResponseImpl implements WritableCachedResponse {
             String contentLengthStr = getHeaderValue("Content-Length");
             if (contentLengthStr != null) {
                 int contentLength = Integer.parseInt(contentLengthStr);
-                cache = new FastByteArrayOutputStream(contentLength);
+                cache = new FastByteArrayOutputStreamPureJava(contentLength);
             }
             else {
-                cache = new FastByteArrayOutputStream(1024);
+                cache = new FastByteArrayOutputStreamPureJava(1024);
             }
             cachedResponse.content = cache;
         }

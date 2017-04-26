@@ -28,15 +28,27 @@
 
 package com.twelvemonkeys.io.ole2;
 
-import com.twelvemonkeys.io.*;
-import com.twelvemonkeys.lang.StringUtil;
-
-import javax.imageio.stream.ImageInputStream;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInput;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
+
+import javax.imageio.stream.ImageInputStream;
+
+import com.twelvemonkeys.io.FileCacheSeekableStream;
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.io.LittleEndianDataInputStream;
+import com.twelvemonkeys.io.LittleEndianRandomAccessFilePureJava;
+import com.twelvemonkeys.io.MemoryCacheSeekableStream;
+import com.twelvemonkeys.io.Seekable;
+import com.twelvemonkeys.io.SeekableInputStream;
+import com.twelvemonkeys.lang.StringUtil;
 
 /**
  * Represents a read-only OLE2 compound document.
@@ -100,7 +112,7 @@ public final class CompoundDocument {
      * @throws IOException if an I/O exception occurs while reading the header
      */
     public CompoundDocument(final File pFile) throws IOException {
-        input = new LittleEndianRandomAccessFile(FileUtil.resolve(pFile), "r");
+        input = new LittleEndianRandomAccessFilePureJava(FileUtilPureJava.resolve(pFile), "r");
 
         // TODO: Might be better to read header on first read operation?!
         // OTOH: It's also good to be fail-fast, so at least we should make
@@ -165,8 +177,8 @@ public final class CompoundDocument {
                 else if (pInput instanceof RandomAccessFile) {
                     pos = ((RandomAccessFile) pInput).getFilePointer();
                 }
-                else if (pInput instanceof LittleEndianRandomAccessFile) {
-                    pos = ((LittleEndianRandomAccessFile) pInput).getFilePointer();
+                else if (pInput instanceof LittleEndianRandomAccessFilePureJava) {
+                    pos = ((LittleEndianRandomAccessFilePureJava) pInput).getFilePointer();
                 }
                 else {
                     return false;
@@ -197,8 +209,8 @@ public final class CompoundDocument {
                     else if (pInput instanceof RandomAccessFile) {
                         ((RandomAccessFile) pInput).seek(pos);
                     }
-                    else if (pInput instanceof LittleEndianRandomAccessFile) {
-                        ((LittleEndianRandomAccessFile) pInput).seek(pos);
+                    else if (pInput instanceof LittleEndianRandomAccessFilePureJava) {
+                        ((LittleEndianRandomAccessFilePureJava) pInput).seek(pos);
                     }
                 }
                 catch (IOException e) {
@@ -430,8 +442,8 @@ public final class CompoundDocument {
             pos = HEADER_SIZE + pSId * (long) sectorSize;
         }
 
-        if (input instanceof LittleEndianRandomAccessFile) {
-            ((LittleEndianRandomAccessFile) input).seek(pos);
+        if (input instanceof LittleEndianRandomAccessFilePureJava) {
+            ((LittleEndianRandomAccessFilePureJava) input).seek(pos);
         }
         else if (input instanceof ImageInputStream) {
             ((ImageInputStream) input).seek(pos);
@@ -454,8 +466,8 @@ public final class CompoundDocument {
         int sId = directorySIdChain.get(sIdOffset);
 
         seekToSId(sId, FREE_SID);
-        if (input instanceof LittleEndianRandomAccessFile) {
-            LittleEndianRandomAccessFile input = (LittleEndianRandomAccessFile) this.input;
+        if (input instanceof LittleEndianRandomAccessFilePureJava) {
+            LittleEndianRandomAccessFilePureJava input = (LittleEndianRandomAccessFilePureJava) this.input;
             input.seek(input.getFilePointer() + dIdOffset * Entry.LENGTH);
         }
         else if (input instanceof ImageInputStream) {

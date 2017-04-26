@@ -28,14 +28,6 @@
 
 package com.twelvemonkeys.servlet;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.StringUtil;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,6 +35,15 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Enumeration;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.StringUtil;
 
 /**
  * A simple proxy servlet implementation. Supports HTTP and HTTPS.
@@ -239,7 +240,7 @@ public class ProxyServlet extends GenericServlet {
             // than headers (Continue, No Content, etc).
             if (fromRemote != null) {
                 toClient = pResponse.getOutputStream();
-                FileUtil.copy(fromRemote, toClient);
+                FileUtilPureJava.copy(fromRemote, toClient);
             }
         }
         finally {
@@ -288,7 +289,7 @@ public class ProxyServlet extends GenericServlet {
         try {
             fromClient = pRequest.getInputStream();
             toRemote = pRemoteConnection.getOutputStream();
-            FileUtil.copy(fromClient, toRemote);
+            FileUtilPureJava.copy(fromClient, toRemote);
         }
         finally {
             if (fromClient != null) {

@@ -1,8 +1,9 @@
 package com.twelvemonkeys.io.enc;
 
 
-import com.twelvemonkeys.io.FileUtil;
 import org.junit.Test;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
 
 import java.io.*;
 
@@ -32,7 +33,7 @@ public class Base64DecoderTestCase extends DecoderAbstractTestCase {
         InputStream in = new DecoderStream(new ByteArrayInputStream(data.getBytes()), createDecoder());
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-        FileUtil.copy(in, bytes);
+        FileUtilPureJava.copy(in, bytes);
 
         assertEquals("Strings does not match", "", new String(bytes.toByteArray()));
     }
@@ -44,7 +45,7 @@ public class Base64DecoderTestCase extends DecoderAbstractTestCase {
         InputStream in = new DecoderStream(new ByteArrayInputStream(data.getBytes()), createDecoder());
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-        FileUtil.copy(in, bytes);
+        FileUtilPureJava.copy(in, bytes);
 
         assertEquals("Strings does not match", "test", new String(bytes.toByteArray()));
     }
@@ -59,7 +60,7 @@ public class Base64DecoderTestCase extends DecoderAbstractTestCase {
         InputStream in = new DecoderStream(new ByteArrayInputStream(data.getBytes()), createDecoder());
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-        FileUtil.copy(in, bytes);
+        FileUtilPureJava.copy(in, bytes);
 
         assertEquals("Strings does not match",
                      "Lorem ipsum dolor sit amet, consectetuer adipiscing " +

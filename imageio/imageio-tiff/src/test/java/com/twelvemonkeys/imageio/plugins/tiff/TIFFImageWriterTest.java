@@ -28,26 +28,24 @@
 
 package com.twelvemonkeys.imageio.plugins.tiff;
 
-import com.twelvemonkeys.imageio.metadata.Directory;
-import com.twelvemonkeys.imageio.metadata.Entry;
-import com.twelvemonkeys.imageio.metadata.tiff.Rational;
-import com.twelvemonkeys.imageio.metadata.tiff.TIFF;
-import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
-import com.twelvemonkeys.imageio.stream.ByteArrayImageInputStream;
-import com.twelvemonkeys.imageio.util.ImageWriterAbstractTestCase;
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.io.NullOutputStream;
-import org.junit.Test;
-import org.w3c.dom.NodeList;
+import static com.twelvemonkeys.imageio.plugins.tiff.TIFFImageMetadataTest.createTIFFFieldNode;
+import static com.twelvemonkeys.imageio.util.ImageReaderAbstractTest.assertRGBEquals;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNotNull;
+import static org.mockito.Matchers.anyFloat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import javax.imageio.*;
-import javax.imageio.event.IIOWriteProgressListener;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.metadata.IIOMetadataFormatImpl;
-import javax.imageio.metadata.IIOMetadataNode;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
@@ -59,11 +57,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.twelvemonkeys.imageio.plugins.tiff.TIFFImageMetadataTest.createTIFFFieldNode;
-import static com.twelvemonkeys.imageio.util.ImageReaderAbstractTest.assertRGBEquals;
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeNotNull;
-import static org.mockito.Mockito.*;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.event.IIOWriteProgressListener;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataFormatImpl;
+import javax.imageio.metadata.IIOMetadataNode;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
+
+import org.junit.Test;
+import org.w3c.dom.NodeList;
+
+import com.twelvemonkeys.imageio.metadata.Directory;
+import com.twelvemonkeys.imageio.metadata.Entry;
+import com.twelvemonkeys.imageio.metadata.tiff.Rational;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFF;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
+import com.twelvemonkeys.imageio.stream.ByteArrayImageInputStream;
+import com.twelvemonkeys.imageio.util.ImageWriterAbstractTestCase;
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.io.NullOutputStream;
 
 /**
  * TIFFImageWriterTest
@@ -446,7 +464,7 @@ public class TIFFImageWriterTest extends ImageWriterAbstractTestCase {
         assumeNotNull(original);
 
         // Write it back, using same compression (copied from metadata)
-        FastByteArrayOutputStream buffer = new FastByteArrayOutputStream(32768);
+        FastByteArrayOutputStreamPureJava buffer = new FastByteArrayOutputStreamPureJava(32768);
 
         try (ImageOutputStream output = ImageIO.createImageOutputStream(buffer)) {
             ImageWriter writer = createImageWriter();
@@ -506,7 +524,7 @@ public class TIFFImageWriterTest extends ImageWriterAbstractTestCase {
         assumeNotNull(original);
 
         // Write it back, using same compression (copied from metadata)
-        FastByteArrayOutputStream buffer = new FastByteArrayOutputStream(32768);
+        FastByteArrayOutputStreamPureJava buffer = new FastByteArrayOutputStreamPureJava(32768);
 
         try (ImageOutputStream output = ImageIO.createImageOutputStream(buffer)) {
             ImageWriter writer = createImageWriter();
@@ -570,7 +588,7 @@ public class TIFFImageWriterTest extends ImageWriterAbstractTestCase {
         assumeNotNull(original);
 
         // Write it back, using same compression (copied from metadata)
-        FastByteArrayOutputStream buffer = new FastByteArrayOutputStream(32768);
+        FastByteArrayOutputStreamPureJava buffer = new FastByteArrayOutputStreamPureJava(32768);
 
         try (ImageOutputStream output = ImageIO.createImageOutputStream(buffer)) {
             ImageWriter writer = createImageWriter();
@@ -635,7 +653,7 @@ public class TIFFImageWriterTest extends ImageWriterAbstractTestCase {
         assumeNotNull(original);
 
         // Write it back, using same compression (copied from metadata)
-        FastByteArrayOutputStream buffer = new FastByteArrayOutputStream(32768);
+        FastByteArrayOutputStreamPureJava buffer = new FastByteArrayOutputStreamPureJava(32768);
 
         try (ImageOutputStream output = ImageIO.createImageOutputStream(buffer)) {
             ImageWriter writer = createImageWriter();
@@ -695,7 +713,7 @@ public class TIFFImageWriterTest extends ImageWriterAbstractTestCase {
         assumeNotNull(original);
 
         // Write it back, using same compression (copied from metadata)
-        FastByteArrayOutputStream buffer = new FastByteArrayOutputStream(32768);
+        FastByteArrayOutputStreamPureJava buffer = new FastByteArrayOutputStreamPureJava(32768);
 
         try (ImageOutputStream output = ImageIO.createImageOutputStream(buffer)) {
             ImageWriter writer = createImageWriter();
@@ -759,7 +777,7 @@ public class TIFFImageWriterTest extends ImageWriterAbstractTestCase {
         assumeNotNull(original);
 
         // Write it back, using same compression (copied from metadata)
-        FastByteArrayOutputStream buffer = new FastByteArrayOutputStream(32768);
+        FastByteArrayOutputStreamPureJava buffer = new FastByteArrayOutputStreamPureJava(32768);
 
         try (ImageOutputStream output = ImageIO.createImageOutputStream(buffer)) {
             ImageWriter writer = createImageWriter();

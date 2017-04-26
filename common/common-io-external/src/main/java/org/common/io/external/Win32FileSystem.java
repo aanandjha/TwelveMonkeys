@@ -26,80 +26,66 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.twelvemonkeys.io;
-
-import com.twelvemonkeys.util.StringTokenIterator;
+package org.common.io.external;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.IOException;
+
 
 /**
- * UnixFileSystem
+ * WindowsFileSystem
  * <p/>
  *
  * @author <a href="mailto:harald.kuhr@gmail.com">Harald Kuhr</a>
- * @version $Id: //depot/branches/personal/haraldk/twelvemonkeys/release-2/twelvemonkeys-core/src/main/java/com/twelvemonkeys/io/UnixFileSystem.java#1 $
+ * @version $Id: //depot/branches/personal/haraldk/twelvemonkeys/release-2/twelvemonkeys-core/src/main/java/com/twelvemonkeys/io/Win32FileSystem.java#2 $
  */
-final class UnixFileSystem extends FileSystem {
-    long getFreeSpace(File pPath) {
+final class Win32FileSystem extends FileSystem {
+    public long getFreeSpace(File pPath) {
         try {
-            return getNumber(pPath, 3);
-        }
-        catch (IOException e) {
-            return 0l;
-        }
-    }
+            // Windows version
+            // TODO: Test on W2K/95/98/etc... (tested on XP)
+            BufferedReader reader = exec(new String[] {"CMD.EXE", "/C", "DIR", "/-C", pPath.getAbsolutePath()});
 
-    long getTotalSpace(File pPath) {
-        try {
-            return getNumber(pPath, 5);
-        }
-        catch (IOException e) {
-            return 0l;
-        }
-    }
-
-    private long getNumber(File pPath, int pIndex) throws IOException {
-        // TODO: Test on other platforms
-        // Tested on Mac OS X, CygWin
-        BufferedReader reader = exec(new String[] {"df", "-k", pPath.getAbsolutePath()});
-
-        String last = null;
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                last = line;
-            }
-        }
-        finally {
-            FileUtil.close(reader);
-        }
-
-        if (last != null) {
-            String blocks = null;
-            StringTokenIterator tokens = new StringTokenIterator(last, " ", StringTokenIterator.REVERSE);
-            int count = 0;
-            // We want the 3rd last token
-            while (count < pIndex && tokens.hasNext()) {
-                blocks = tokens.nextToken();
-                count++;
-            }
-
-            if (blocks != null) {
-                try {
-                    return Long.parseLong(blocks) * 1024L;
-                }
-                catch (NumberFormatException ignore) {
-                    // Ignore
+            String last = null;
+            String line;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    last = line;
                 }
             }
+            finally {
+                FileUtil.close(reader);
+            }
+
+            if (last != null) {
+                int end = last.lastIndexOf(" bytes free");
+                int start = last.lastIndexOf(' ', end - 1);
+
+                if (start >= 0 && end >= 0) {
+                    try {
+                        return Long.parseLong(last.substring(start + 1, end));
+                    }
+                    catch (NumberFormatException ignore) {
+                        // Ignore
+                    }
+                }
+            }
+        }
+        catch (IOException ignore) {
+            // Ignore
         }
 
         return 0l;
     }
 
+    long getTotalSpace(File pPath) {
+        // TODO: Implement, probably need some JNI stuff...
+        // Distribute df.exe and execute from temp!? ;-)
+        return getFreeSpace(pPath);
+    }
+
     String getName() {
-        return "Unix";
+        return "Win32";
     }
 }

@@ -28,12 +28,6 @@
 
 package com.twelvemonkeys.imageio.color;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.Platform;
-import com.twelvemonkeys.lang.SystemUtil;
-import com.twelvemonkeys.lang.Validate;
-import com.twelvemonkeys.util.LRUHashMap;
-
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
@@ -43,6 +37,12 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.Platform;
+import com.twelvemonkeys.lang.SystemUtil;
+import com.twelvemonkeys.lang.Validate;
+import com.twelvemonkeys.util.LRUHashMap;
 
 /**
  * A helper class for working with ICC color profiles and color spaces.
@@ -327,7 +327,7 @@ public final class ColorSpaces {
                 }
             }
             finally {
-                FileUtil.close(stream);
+                FileUtilPureJava.close(stream);
             }
         }
 

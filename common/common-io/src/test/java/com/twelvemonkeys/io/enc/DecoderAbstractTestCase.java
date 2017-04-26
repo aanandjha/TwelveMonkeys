@@ -1,13 +1,21 @@
 package com.twelvemonkeys.io.enc;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.ObjectAbstractTestCase;
-import org.junit.Test;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.ObjectAbstractTestCase;
 
 /**
  * AbstractDecoderTest
@@ -63,12 +71,12 @@ public abstract class DecoderAbstractTestCase extends ObjectAbstractTestCase {
         out.close();
         byte[] encoded = outBytes.toByteArray();
 
-        byte[] decoded = FileUtil.read(new DecoderStream(new ByteArrayInputStream(encoded), createDecoder()));
+        byte[] decoded = FileUtilPureJava.read(new DecoderStream(new ByteArrayInputStream(encoded), createDecoder()));
         assertArrayEquals(String.format("Data %d", pLength), data, decoded);
 
         InputStream in = new DecoderStream(new ByteArrayInputStream(encoded), createDecoder());
         outBytes = new ByteArrayOutputStream();
-        FileUtil.copy(in, outBytes);
+        FileUtilPureJava.copy(in, outBytes);
         outBytes.close();
         in.close();
 

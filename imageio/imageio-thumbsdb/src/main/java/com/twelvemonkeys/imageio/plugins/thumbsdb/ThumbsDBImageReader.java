@@ -28,21 +28,13 @@
 
 package com.twelvemonkeys.imageio.plugins.thumbsdb;
 
-import com.twelvemonkeys.imageio.ImageReaderBase;
-import com.twelvemonkeys.imageio.util.ProgressListenerBase;
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.io.ole2.CompoundDocument;
-import com.twelvemonkeys.io.ole2.Entry;
-import com.twelvemonkeys.lang.StringUtil;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -52,6 +44,27 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.Iterator;
 import java.util.SortedSet;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.MemoryCacheImageInputStream;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
+
+import com.twelvemonkeys.imageio.ImageReaderBase;
+import com.twelvemonkeys.imageio.util.ProgressListenerBase;
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.io.ole2.CompoundDocument;
+import com.twelvemonkeys.io.ole2.Entry;
+import com.twelvemonkeys.lang.StringUtil;
 
 /**
  * ThumbsDBImageReader
@@ -339,7 +352,7 @@ public final class ThumbsDBImageReader extends ImageReaderBase {
         // are supported...
         // Some thumbs are just icons, and it might be better to use ImageIO to create thumbs for these... :-/ 
         // At least this seems fine for now
-        String extension = FileUtil.getExtension(pFileName);
+        String extension = FileUtilPureJava.getExtension(pFileName);
         if (StringUtil.isEmpty(extension)) {
             return false;
         }

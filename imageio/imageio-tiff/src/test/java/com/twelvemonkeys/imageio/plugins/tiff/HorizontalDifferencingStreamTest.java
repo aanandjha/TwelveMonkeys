@@ -28,16 +28,24 @@
 
 package com.twelvemonkeys.imageio.plugins.tiff;
 
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.io.LittleEndianDataInputStream;
-import com.twelvemonkeys.io.LittleEndianDataOutputStream;
-import org.junit.Test;
-
-import java.io.*;
-import java.nio.ByteOrder;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteOrder;
+
+import org.junit.Test;
+
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.io.LittleEndianDataInputStream;
+import com.twelvemonkeys.io.LittleEndianDataOutputStream;
 
 /**
  * HorizontalDifferencingStreamTest
@@ -190,7 +198,7 @@ public class HorizontalDifferencingStreamTest {
     @Test
     public void testWrite1SPP32BPS() throws IOException {
         // 1 sample per pixel, 32 bits per sample (gray)
-        FastByteArrayOutputStream bytes = new FastByteArrayOutputStream(16);
+        FastByteArrayOutputStreamPureJava bytes = new FastByteArrayOutputStreamPureJava(16);
         OutputStream out = new HorizontalDifferencingStream(bytes, 4, 1, 32, ByteOrder.BIG_ENDIAN);
         DataOutput dataOut = new DataOutputStream(out);
         dataOut.writeInt(0x00000000);
@@ -214,7 +222,7 @@ public class HorizontalDifferencingStreamTest {
     @Test
     public void testWrite1SPP32BPSLittleEndian() throws IOException {
         // 1 sample per pixel, 32 bits per sample (gray)
-        FastByteArrayOutputStream bytes = new FastByteArrayOutputStream(16);
+        FastByteArrayOutputStreamPureJava bytes = new FastByteArrayOutputStreamPureJava(16);
         OutputStream out = new HorizontalDifferencingStream(bytes, 4, 1, 32, ByteOrder.LITTLE_ENDIAN);
         DataOutput dataOut = new LittleEndianDataOutputStream(out);
         dataOut.writeInt(0x00000000);
@@ -238,7 +246,7 @@ public class HorizontalDifferencingStreamTest {
     @Test
     public void testWrite1SPP64BPS() throws IOException {
         // 1 sample per pixel, 64 bits per sample (gray)
-        FastByteArrayOutputStream bytes = new FastByteArrayOutputStream(32);
+        FastByteArrayOutputStreamPureJava bytes = new FastByteArrayOutputStreamPureJava(32);
 
         OutputStream out = new HorizontalDifferencingStream(bytes, 4, 1, 64, ByteOrder.BIG_ENDIAN);
         DataOutput dataOut = new DataOutputStream(out);
@@ -263,7 +271,7 @@ public class HorizontalDifferencingStreamTest {
     @Test
     public void testWrite1SPP64BPSLittleEndian() throws IOException {
         // 1 sample per pixel, 64 bits per sample (gray)
-        FastByteArrayOutputStream bytes = new FastByteArrayOutputStream(32);
+        FastByteArrayOutputStreamPureJava bytes = new FastByteArrayOutputStreamPureJava(32);
 
         OutputStream out = new HorizontalDifferencingStream(bytes, 4, 1, 64, ByteOrder.LITTLE_ENDIAN);
         DataOutput dataOut = new LittleEndianDataOutputStream(out);
@@ -354,7 +362,7 @@ public class HorizontalDifferencingStreamTest {
 
     @Test
     public void testWrite3SPP16BPS() throws IOException {
-        FastByteArrayOutputStream bytes = new FastByteArrayOutputStream(24);
+        FastByteArrayOutputStreamPureJava bytes = new FastByteArrayOutputStreamPureJava(24);
         OutputStream out = new HorizontalDifferencingStream(bytes, 4, 3, 16, ByteOrder.BIG_ENDIAN);
 
         DataOutput dataOut = new DataOutputStream(out);
@@ -421,7 +429,7 @@ public class HorizontalDifferencingStreamTest {
 
     @Test
     public void testWrite3SPP16BPSLittleEndian() throws IOException {
-        FastByteArrayOutputStream bytes = new FastByteArrayOutputStream(24);
+        FastByteArrayOutputStreamPureJava bytes = new FastByteArrayOutputStreamPureJava(24);
 
         OutputStream out = new HorizontalDifferencingStream(bytes, 4, 3, 16, ByteOrder.LITTLE_ENDIAN);
         DataOutput dataOut = new LittleEndianDataOutputStream(out);

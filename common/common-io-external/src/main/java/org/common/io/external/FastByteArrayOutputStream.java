@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.twelvemonkeys.io;
+package org.common.io.external;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

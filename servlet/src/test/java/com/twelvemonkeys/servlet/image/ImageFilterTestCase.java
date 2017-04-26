@@ -28,17 +28,23 @@
 
 package com.twelvemonkeys.servlet.image;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.servlet.OutputStreamAdapter;
-import com.twelvemonkeys.util.StringTokenIterator;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
@@ -47,8 +53,23 @@ import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.servlet.OutputStreamAdapter;
+import com.twelvemonkeys.util.StringTokenIterator;
 
 /**
  * ImageFilterTestCase
@@ -122,7 +143,7 @@ public class ImageFilterTestCase {
                 response.setContentLength(104417);
                 InputStream stream = getClass().getResourceAsStream("/com/twelvemonkeys/servlet/image/12monkeys-splash.png");
                 assertNotNull("Missing test resource", stream);
-                FileUtil.copy(stream, response.getOutputStream());
+                FileUtilPureJava.copy(stream, response.getOutputStream());
 
                 return null;
             }
@@ -325,7 +346,7 @@ public class ImageFilterTestCase {
                 response.setContentType("image/gif");
                 InputStream stream = getClass().getResourceAsStream("/com/twelvemonkeys/servlet/image/tux.gif");
                 assertNotNull("Missing test resource", stream);
-                FileUtil.copy(stream, response.getOutputStream());
+                FileUtilPureJava.copy(stream, response.getOutputStream());
 
                 return null;
             }

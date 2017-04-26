@@ -1,22 +1,29 @@
 package com.twelvemonkeys.servlet.image;
 
-import com.twelvemonkeys.image.BufferedImageIcon;
-import com.twelvemonkeys.image.ImageUtil;
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.servlet.OutputStreamAdapter;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
@@ -24,8 +31,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.swing.JLabel;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import com.twelvemonkeys.image.BufferedImageIcon;
+import com.twelvemonkeys.image.ImageUtil;
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.servlet.OutputStreamAdapter;
 
 /**
  * ImageServletResponseImplTestCase
@@ -97,7 +119,7 @@ public class ImageServletResponseImplTestCase {
             try {
                 ServletOutputStream out = pImageResponse.getOutputStream();
                 try {
-                    FileUtil.copy(in, out);
+                    FileUtilPureJava.copy(in, out);
                 }
                 finally {
                     out.close();
@@ -111,7 +133,7 @@ public class ImageServletResponseImplTestCase {
 
     @Test
     public void testBasicResponse() throws IOException {
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
@@ -146,7 +168,7 @@ public class ImageServletResponseImplTestCase {
 
     @Test
     public void testNoOpResponse() throws IOException {
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
@@ -161,7 +183,7 @@ public class ImageServletResponseImplTestCase {
         assertTrue("Content has no data", out.size() > 0);
 
         // Test that image data is untouched
-        assertTrue("Data differs", Arrays.equals(FileUtil.read(getClass().getResourceAsStream(IMAGE_NAME_PNG)), out.toByteArray()));
+        assertTrue("Data differs", Arrays.equals(FileUtilPureJava.read(getClass().getResourceAsStream(IMAGE_NAME_PNG)), out.toByteArray()));
 
         verify(response).setContentType(CONTENT_TYPE_PNG);
         verify(response).getOutputStream();
@@ -170,7 +192,7 @@ public class ImageServletResponseImplTestCase {
     // Transcode original PNG to JPEG with no other changes
     @Test
     public void testTranscodeResponsePNGToJPEG() throws IOException {
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
@@ -227,7 +249,7 @@ public class ImageServletResponseImplTestCase {
     // (even if there's only one possible compression mode/type combo; MODE_EXPLICIT/"LZW")
    @Test
     public void testTranscodeResponsePNGToGIFWithQuality() throws IOException {
-       FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+       FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
 
        HttpServletResponse response = mock(HttpServletResponse.class);
        when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
@@ -273,7 +295,7 @@ public class ImageServletResponseImplTestCase {
     // See: http://bugs.sun.com/view_bug.do?bug_id=6287936
     @Test
     public void testTranscodeResponsePNGToGIF() throws IOException {
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -311,7 +333,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_GIF);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -360,7 +382,7 @@ public class ImageServletResponseImplTestCase {
             when(request.getContextPath()).thenReturn("/ape");
             when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG_INDEXED);
 
-            FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+            FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
             HttpServletResponse response = mock(HttpServletResponse.class);
             when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -493,7 +515,7 @@ public class ImageServletResponseImplTestCase {
 
     @Test
     public void testReplaceResponse() throws IOException {
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -626,7 +648,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -663,7 +685,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
@@ -704,7 +726,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -765,7 +787,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -847,7 +869,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -895,7 +917,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -935,7 +957,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -985,7 +1007,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -1026,7 +1048,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -1085,7 +1107,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 
@@ -1100,7 +1122,7 @@ public class ImageServletResponseImplTestCase {
         imageResponse.flush();
 
 //        File tempFile = File.createTempFile("test", ".png");
-//        FileUtil.write(tempFile, out.toByteArray());
+//        FileUtilPureJava.write(tempFile, out.toByteArray());
 //        System.out.println("tempFile: " + tempFile);
 
         assertTrue("Image wider than bounding box", size.width >= image.getWidth());
@@ -1148,7 +1170,7 @@ public class ImageServletResponseImplTestCase {
         when(request.getContextPath()).thenReturn("/ape");
         when(request.getRequestURI()).thenReturn("/ape/" + IMAGE_NAME_PNG);
 
-        FastByteArrayOutputStream out = new FastByteArrayOutputStream(STREAM_DEFAULT_SIZE);
+        FastByteArrayOutputStreamPureJava out = new FastByteArrayOutputStreamPureJava(STREAM_DEFAULT_SIZE);
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getOutputStream()).thenReturn(new OutputStreamAdapter(out));
 

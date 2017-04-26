@@ -28,25 +28,31 @@
 
 package com.twelvemonkeys.imageio.metadata.exif;
 
-import com.twelvemonkeys.imageio.metadata.*;
-import com.twelvemonkeys.imageio.metadata.tiff.TIFF;
-import com.twelvemonkeys.imageio.metadata.tiff.TIFFEntry;
-import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
-import com.twelvemonkeys.imageio.metadata.tiff.TIFFWriter;
-import com.twelvemonkeys.imageio.stream.ByteArrayImageInputStream;
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+
+import org.junit.Test;
+
+import com.twelvemonkeys.imageio.metadata.AbstractDirectory;
+import com.twelvemonkeys.imageio.metadata.AbstractEntry;
+import com.twelvemonkeys.imageio.metadata.Directory;
+import com.twelvemonkeys.imageio.metadata.Entry;
+import com.twelvemonkeys.imageio.metadata.MetadataWriterAbstractTest;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFF;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFFEntry;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFFWriter;
+import com.twelvemonkeys.imageio.stream.ByteArrayImageInputStream;
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
 
 /**
  * TIFFWriterTest
@@ -82,7 +88,7 @@ public class EXIFWriterTest extends MetadataWriterAbstractTest {
         entries.add(new AbstractEntry(TIFF.TAG_SOFTWARE, "TwelveMonkeys ImageIO") {});
         Directory directory = new AbstractDirectory(entries) {};
 
-        ByteArrayOutputStream output = new FastByteArrayOutputStream(1024);
+        ByteArrayOutputStream output = new FastByteArrayOutputStreamPureJava(1024);
         ImageOutputStream imageStream = ImageIO.createImageOutputStream(output);
         new TIFFWriter().write(directory, imageStream);
         imageStream.flush();
@@ -125,7 +131,7 @@ public class EXIFWriterTest extends MetadataWriterAbstractTest {
         entries.add(new TIFFEntry(TIFF.TAG_IMAGE_WIDTH, TIFF.TYPE_LONG, Integer.MAX_VALUE));
         Directory directory = new AbstractDirectory(entries) {};
 
-        ByteArrayOutputStream output = new FastByteArrayOutputStream(1024);
+        ByteArrayOutputStream output = new FastByteArrayOutputStreamPureJava(1024);
         ImageOutputStream imageStream = ImageIO.createImageOutputStream(output);
 
         imageStream.setByteOrder(ByteOrder.BIG_ENDIAN); // BE = Motorola
@@ -160,7 +166,7 @@ public class EXIFWriterTest extends MetadataWriterAbstractTest {
         entries.add(new TIFFEntry(TIFF.TAG_IMAGE_WIDTH, TIFF.TYPE_LONG, Integer.MAX_VALUE));
         Directory directory = new AbstractDirectory(entries) {};
 
-        ByteArrayOutputStream output = new FastByteArrayOutputStream(1024);
+        ByteArrayOutputStream output = new FastByteArrayOutputStreamPureJava(1024);
         ImageOutputStream imageStream = ImageIO.createImageOutputStream(output);
 
         imageStream.setByteOrder(ByteOrder.LITTLE_ENDIAN); // LE = Intel
@@ -192,7 +198,7 @@ public class EXIFWriterTest extends MetadataWriterAbstractTest {
     public void testReadWriteRead() throws IOException {
         Directory original = createReader().read(getDataAsIIS());
 
-        ByteArrayOutputStream output = new FastByteArrayOutputStream(256);
+        ByteArrayOutputStream output = new FastByteArrayOutputStreamPureJava(256);
 
         try (ImageOutputStream imageOutput = ImageIO.createImageOutputStream(output)) {
             createWriter().write(original, imageOutput);

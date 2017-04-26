@@ -28,10 +28,7 @@
 
 package com.twelvemonkeys.imageio.plugins.tiff;
 
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.io.enc.Decoder;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,7 +36,11 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.io.enc.Decoder;
 
 /**
  * LZWEncoderTest
@@ -61,7 +62,7 @@ public class LZWEncoderTest {
         byte[] bytes = new byte[] {7, 7, 7, 8, 8, 7, 7, 6, 6};
         LZWEncoder encoder = new LZWEncoder(bytes.length);
 
-        OutputStream stream = new FastByteArrayOutputStream(10);
+        OutputStream stream = new FastByteArrayOutputStreamPureJava(10);
         encoder.encode(stream, ByteBuffer.wrap(bytes));
     }
 
@@ -70,7 +71,7 @@ public class LZWEncoderTest {
         byte[] bytes = new byte[] {7, 7, 7, 8, 8, 7, 7, 6, 6};
         LZWEncoder encoder = new LZWEncoder(bytes.length);
 
-        FastByteArrayOutputStream stream = new FastByteArrayOutputStream(10);
+        FastByteArrayOutputStreamPureJava stream = new FastByteArrayOutputStreamPureJava(10);
         encoder.encode(stream, ByteBuffer.wrap(bytes));
 
         ByteArrayInputStream inputStream = stream.createInputStream();
@@ -102,7 +103,7 @@ public class LZWEncoderTest {
             bytes[i] = (byte) i;
         }
 
-        FastByteArrayOutputStream stream = new FastByteArrayOutputStream((LENGTH * 3) / 4);
+        FastByteArrayOutputStreamPureJava stream = new FastByteArrayOutputStreamPureJava((LENGTH * 3) / 4);
 
         for (int i = 0; i < ITERATIONS; i++) {
             encoder.encode(stream, ByteBuffer.wrap(bytes, i * LENGTH / ITERATIONS, LENGTH / ITERATIONS));
@@ -140,7 +141,7 @@ public class LZWEncoderTest {
 
         random.nextBytes(bytes);
 
-        FastByteArrayOutputStream stream = new FastByteArrayOutputStream((LENGTH * 3) / 4);
+        FastByteArrayOutputStreamPureJava stream = new FastByteArrayOutputStreamPureJava((LENGTH * 3) / 4);
 
         for (int i = 0; i < ITERATIONS; i++) {
             encoder.encode(stream, ByteBuffer.wrap(bytes, i * LENGTH / ITERATIONS, LENGTH / ITERATIONS));
@@ -183,7 +184,7 @@ public class LZWEncoderTest {
                 bytes[i] = (byte) i;
             }
 
-            FastByteArrayOutputStream stream = new FastByteArrayOutputStream((LENGTH * 3) / 4);
+            FastByteArrayOutputStreamPureJava stream = new FastByteArrayOutputStreamPureJava((LENGTH * 3) / 4);
 
             for (int i = 0; i < ITERATIONS; i++) {
                 encoder.encode(stream, ByteBuffer.wrap(bytes, i * LENGTH / ITERATIONS, LENGTH / ITERATIONS));

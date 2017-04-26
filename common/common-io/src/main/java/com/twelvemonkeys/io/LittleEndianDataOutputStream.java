@@ -58,7 +58,7 @@ import java.io.*;
  * specify the byte order of their underlying representations.
  * </em>
  *
- * @see com.twelvemonkeys.io.LittleEndianRandomAccessFile
+ * @see org.LittleEndianRandomAccessFilePureJava.io.external.LittleEndianRandomAccessFile
  * @see java.io.DataOutputStream
  * @see java.io.DataInput
  * @see java.io.DataOutput

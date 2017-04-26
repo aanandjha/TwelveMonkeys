@@ -28,15 +28,16 @@
 
 package com.twelvemonkeys.servlet;
 
-import com.twelvemonkeys.io.FileUtil;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
 
 /**
  * A minimal servlet that can serve static files. Also from outside the web application.
@@ -104,7 +105,7 @@ public final class StaticContentServlet extends HttpServlet {
             InputStream in = new FileInputStream(file);
 
             try {
-                FileUtil.copy(in, response.getOutputStream());
+                FileUtilPureJava.copy(in, response.getOutputStream());
             }
             finally {
                 in.close();

@@ -80,11 +80,12 @@
 
 package com.twelvemonkeys.image;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.StringUtil;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
@@ -94,6 +95,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.StringUtil;
 
 /**
  * This class implements an adaptive palette generator to reduce images
@@ -1351,12 +1357,12 @@ class IndexImage {
 
             // Get format from file extension
             if (format == null) {
-                format = FileUtil.getExtension(out);
+                format = FileUtilPureJava.getExtension(out);
             }
         }
         else {
             // Create new file in current dir, same name + format extension
-            String baseName = FileUtil.getBasename(in);
+            String baseName = FileUtilPureJava.getBasename(in);
 
             // Use png as default format
             if (format == null) {

@@ -147,7 +147,7 @@ public abstract class SeekableInputStreamAbstractTestCase extends InputStreamAbs
             seekable.seek(pos);
             //noinspection ResultOfMethodCallIgnored
             seekable.skip(i);
-            byte[] bytes = FileUtil.read(seekable);
+            byte[] bytes = FileUtilPureJava.read(seekable);
             assertEquals(133, seekable.getStreamPosition());
             assertEquals(133 - 45- i, bytes.length);
         }
@@ -156,9 +156,9 @@ public abstract class SeekableInputStreamAbstractTestCase extends InputStreamAbs
     protected void testSeekSkip(SeekableInputStream pSeekable, String pStr) throws IOException {
         System.out.println();
         pSeekable.seek(pStr.length());
-        FileUtil.read(pSeekable);
+        FileUtilPureJava.read(pSeekable);
         for (int i = 0; i < 10; i++) {
-            byte[] bytes = FileUtil.read(pSeekable);
+            byte[] bytes = FileUtilPureJava.read(pSeekable);
             int len = bytes.length;
             if (len != 0) {
                 System.err.println("Error in buffer length after full read...");
@@ -175,7 +175,7 @@ public abstract class SeekableInputStreamAbstractTestCase extends InputStreamAbs
             int skip = i * 3;
             //noinspection ResultOfMethodCallIgnored
             pSeekable.skip(skip);
-            String str = new String(FileUtil.read(pSeekable));
+            String str = new String(FileUtilPureJava.read(pSeekable));
             System.out.println(str);
             if (str.length() != pStr.length() - skip) {
                 throw new Error("Error in buffer length after skip");
@@ -190,7 +190,7 @@ public abstract class SeekableInputStreamAbstractTestCase extends InputStreamAbs
     protected static void markReset(SeekableInputStream pSeekable) throws IOException {
         for (int i = 0; i < 10; i++) {
             pSeekable.mark();
-            System.out.println(new String(FileUtil.read(pSeekable)));
+            System.out.println(new String(FileUtilPureJava.read(pSeekable)));
             pSeekable.reset();
         }
 
@@ -201,7 +201,7 @@ public abstract class SeekableInputStreamAbstractTestCase extends InputStreamAbs
     protected static void timeRead(SeekableInputStream pSeekable) throws IOException {
         for (int i = 0; i < 5000; i++) {
             pSeekable.mark();
-            FileUtil.read(pSeekable);
+            FileUtilPureJava.read(pSeekable);
             pSeekable.reset();
         }
 
@@ -209,7 +209,7 @@ public abstract class SeekableInputStreamAbstractTestCase extends InputStreamAbs
         final int times = 200000;
         for (int i = 0; i < times; i++) {
             pSeekable.mark();
-            FileUtil.read(pSeekable);
+            FileUtilPureJava.read(pSeekable);
             pSeekable.reset();
         }
         long time = System.currentTimeMillis() - start;
@@ -424,7 +424,7 @@ public abstract class SeekableInputStreamAbstractTestCase extends InputStreamAbs
         SeekableInputStream stream = makeInputStream(input);
 
         try {
-            FileUtil.read(stream); // Read until EOF
+            FileUtilPureJava.read(stream); // Read until EOF
 
             assertEquals("EOF not reached (test case broken)", -1, stream.read());
             assertFalse("Underlying stream closed before close", closed[0]);

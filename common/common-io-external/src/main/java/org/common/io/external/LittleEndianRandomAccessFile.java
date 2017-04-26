@@ -26,10 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.twelvemonkeys.io;
+package org.common.io.external;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
+
+import com.twelvemonkeys.io.LittleEndianDataInputStream;
+import com.twelvemonkeys.io.LittleEndianDataOutputStream;
 
 /**
  * A replacement for {@link java.io.RandomAccessFile} that is capable of reading

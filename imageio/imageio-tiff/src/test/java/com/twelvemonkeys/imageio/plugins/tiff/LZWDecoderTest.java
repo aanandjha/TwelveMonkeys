@@ -26,20 +26,24 @@ package com.twelvemonkeys.imageio.plugins.tiff;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.io.enc.Decoder;
-import com.twelvemonkeys.io.enc.DecoderAbstractTestCase;
-import com.twelvemonkeys.io.enc.DecoderStream;
-import com.twelvemonkeys.io.enc.Encoder;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import static org.junit.Assert.*;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.io.enc.Decoder;
+import com.twelvemonkeys.io.enc.DecoderAbstractTestCase;
+import com.twelvemonkeys.io.enc.DecoderStream;
+import com.twelvemonkeys.io.enc.Encoder;
 
 /**
  * LZWDecoderTest
@@ -111,7 +115,7 @@ public class LZWDecoderTest extends DecoderAbstractTestCase {
     @Ignore
     @Test(timeout = 3000)
     public void testSpeed() throws IOException {
-        byte[] bytes = FileUtil.read(getClass().getResourceAsStream("/lzw/lzw-long.bin"));
+        byte[] bytes = FileUtilPureJava.read(getClass().getResourceAsStream("/lzw/lzw-long.bin"));
 
 
         for (int i = 0; i < SPEED_TEST_ITERATIONS; i++) {

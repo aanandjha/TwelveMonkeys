@@ -1,7 +1,6 @@
 package com.twelvemonkeys.io;
 
 import org.junit.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,20 +15,20 @@ import static org.junit.Assert.assertEquals;
  * @version $Id: //depot/branches/personal/haraldk/twelvemonkeys/release-2/twelvemonkeys-core/src/test/java/com/twelvemonkeys/io/FastByteArrayOutputStreamTestCase.java#1 $
  */
 public class FastByteArrayOutputStreamTestCase extends OutputStreamAbstractTestCase {
-    protected FastByteArrayOutputStream makeObject() {
-        return new FastByteArrayOutputStream(256);
+    protected FastByteArrayOutputStreamPureJava makeObject() {
+        return new FastByteArrayOutputStreamPureJava(256);
     }
 
     @Test
     public void testCreateInputStream() throws IOException {
-        FastByteArrayOutputStream out = makeObject();
+        FastByteArrayOutputStreamPureJava out = makeObject();
 
         String hello = "Hello World";
         out.write(hello.getBytes("UTF-8"));
 
         InputStream in = out.createInputStream();
 
-        byte[] read = FileUtil.read(in);
+        byte[] read = FileUtilPureJava.read(in);
 
         assertEquals(hello, new String(read, "UTF-8"));
     }

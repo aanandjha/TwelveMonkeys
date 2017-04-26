@@ -28,25 +28,13 @@
 
 package com.twelvemonkeys.servlet.image;
 
-import com.twelvemonkeys.image.ImageUtil;
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.lang.StringUtil;
-import com.twelvemonkeys.servlet.ServletResponseStreamDelegate;
-import com.twelvemonkeys.servlet.ServletUtil;
-import com.twelvemonkeys.servlet.image.aoi.AreaOfInterest;
-import com.twelvemonkeys.servlet.image.aoi.AreaOfInterestFactory;
-
-import javax.imageio.*;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
@@ -57,6 +45,31 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Iterator;
+
+import javax.imageio.IIOException;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+
+import com.twelvemonkeys.image.ImageUtil;
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.lang.StringUtil;
+import com.twelvemonkeys.servlet.ServletResponseStreamDelegate;
+import com.twelvemonkeys.servlet.ServletUtil;
+import com.twelvemonkeys.servlet.image.aoi.AreaOfInterest;
+import com.twelvemonkeys.servlet.image.aoi.AreaOfInterestFactory;
 
 /**
  * This {@link ImageServletResponse} implementation can be used with image
@@ -78,7 +91,7 @@ class ImageServletResponseImpl extends HttpServletResponseWrapper implements Ima
     private final ServletContext context;
     private final ServletResponseStreamDelegate streamDelegate;
 
-    private FastByteArrayOutputStream bufferedOut;
+    private FastByteArrayOutputStreamPureJava bufferedOut;
 
     private RenderedImage image;
     private String outputContentType;
@@ -100,10 +113,10 @@ class ImageServletResponseImpl extends HttpServletResponseWrapper implements Ima
             @Override
             protected OutputStream createOutputStream() throws IOException {
                 if (originalContentLength >= 0) {
-                    bufferedOut = new FastByteArrayOutputStream(originalContentLength);
+                    bufferedOut = new FastByteArrayOutputStreamPureJava(originalContentLength);
                 }
                 else {
-                    bufferedOut = new FastByteArrayOutputStream(0);
+                    bufferedOut = new FastByteArrayOutputStreamPureJava(0);
                 }
 
                 return bufferedOut;

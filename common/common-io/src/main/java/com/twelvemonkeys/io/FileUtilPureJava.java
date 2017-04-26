@@ -28,6 +28,8 @@
 
 package com.twelvemonkeys.io;
 
+import com.twelvemonkeys.io.FileSystemPureJava;
+import com.twelvemonkeys.io.FilenameMaskFilter;
 import com.twelvemonkeys.lang.StringUtil;
 import com.twelvemonkeys.lang.Validate;
 import com.twelvemonkeys.util.Visitor;
@@ -50,7 +52,7 @@ import java.lang.reflect.UndeclaredThrowableException;
  * @author last modified by $Author: haku $
  * @version $Id: //depot/branches/personal/haraldk/twelvemonkeys/release-2/twelvemonkeys-core/src/main/java/com/twelvemonkeys/io/FileUtil.java#3 $
  */
-public final class FileUtil {
+public final class FileUtilPureJava {
     // TODO: Be more cosequent using resolve() all places where File objects are involved
     // TODO: Parameter handling (allow null vs IllegalArgument)
     // TODO: Exception handling
@@ -61,7 +63,7 @@ public final class FileUtil {
     public final static int BUF_SIZE = 1024;
     private static String TEMP_DIR = null;
 
-    private final static FileSystem FS = FileSystem.get();
+    private final static FileSystemPureJava FS = FileSystemPureJava.get();
 
     public static void main(String[] pArgs) throws IOException {
         File file;
@@ -97,7 +99,7 @@ public final class FileUtil {
     //*/
 
     // Avoid instances/constructor showing up in API doc
-    private FileUtil() {}
+    private FileUtilPureJava() {}
 
     /**
      * Copies the fromFile to the toFile location. If toFile is a directory, a
@@ -507,7 +509,7 @@ public final class FileUtil {
      * @see File#createTempFile
      */
     public static String getTempDir() {
-        synchronized (FileUtil.class) {
+        synchronized (FileUtilPureJava.class) {
             if (TEMP_DIR == null) {
                 // Get the 'java.io.tmpdir' property
                 String tmpDir = System.getProperty("java.io.tmpdir");
@@ -583,7 +585,7 @@ public final class FileUtil {
      */
     public static byte[] read(InputStream pInput) throws IOException {
         // Create byte array
-        ByteArrayOutputStream bytes = new FastByteArrayOutputStream(BUF_SIZE);
+        ByteArrayOutputStream bytes = new FastByteArrayOutputStreamPureJava(BUF_SIZE);
 
         // Copy from stream to byte array
         copy(pInput, bytes);
@@ -935,19 +937,19 @@ public final class FileUtil {
     }
 
     public static File resolve(String pPath) {
-        return Win32File.wrap(new File(pPath));
+        return Win32FilePureJava.wrap(new File(pPath));
     }
 
     public static File resolve(File pPath) {
-        return Win32File.wrap(pPath);
+        return Win32FilePureJava.wrap(pPath);
     }
 
     public static File resolve(File pParent, String pChild) {
-        return Win32File.wrap(new File(pParent, pChild));
+        return Win32FilePureJava.wrap(new File(pParent, pChild));
     }
 
     public static File[] resolve(File[] pPaths) {
-        return Win32File.wrap(pPaths);
+        return Win32FilePureJava.wrap(pPaths);
     }
 
     // TODO: Handle SecurityManagers in a deterministic way

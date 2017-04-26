@@ -1,14 +1,20 @@
 package com.twelvemonkeys.io.enc;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.ObjectAbstractTestCase;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.ObjectAbstractTestCase;
 
 /**
  * AbstractEncoderTest
@@ -70,14 +76,14 @@ public abstract class EncoderAbstractTestCase extends ObjectAbstractTestCase {
 //        System.err.println("encoded.length: " + encoded.length);
 //        System.err.println("encoded: " + Arrays.toString(encoded));
 
-        byte[] decoded = FileUtil.read(new DecoderStream(new ByteArrayInputStream(encoded), createCompatibleDecoder()));
+        byte[] decoded = FileUtilPureJava.read(new DecoderStream(new ByteArrayInputStream(encoded), createCompatibleDecoder()));
         assertTrue(Arrays.equals(data, decoded));
 
         InputStream in = new DecoderStream(new ByteArrayInputStream(encoded), createCompatibleDecoder());
         outBytes = new ByteArrayOutputStream();
 
         try {
-            FileUtil.copy(in, outBytes);
+            FileUtilPureJava.copy(in, outBytes);
         }
         finally {
             outBytes.close();

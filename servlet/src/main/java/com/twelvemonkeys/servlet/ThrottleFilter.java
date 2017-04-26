@@ -28,8 +28,12 @@
 
 package com.twelvemonkeys.servlet;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.StringUtil;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -37,12 +41,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.StringUtil;
 
 /**
  * ThrottleFilter, a filter for easing server during heavy load.
@@ -271,7 +272,7 @@ public class ThrottleFilter extends GenericFilter {
             InputStream is = getServletContext().getResourceAsStream(pFileName);
 
             if (is != null) {
-                return new String(FileUtil.read(is));
+                return new String(FileUtilPureJava.read(is));
             }
             else {
                 log("File not found: " + pFileName);

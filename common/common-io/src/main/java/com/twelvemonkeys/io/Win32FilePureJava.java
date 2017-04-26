@@ -37,7 +37,7 @@ import java.io.*;
  * @author <a href="mailto:harald.kuhr@gmail.com">Harald Kuhr</a>
  * @version $Id: //depot/branches/personal/haraldk/twelvemonkeys/release-2/twelvemonkeys-core/src/main/java/com/twelvemonkeys/io/Win32File.java#2 $
  */
-final class Win32File extends File {
+final class Win32FilePureJava extends File {
     private final static boolean IS_WINDOWS = isWindows();
 
     private static boolean isWindows() {
@@ -51,7 +51,7 @@ final class Win32File extends File {
         return false;
     }
 
-    private Win32File(File pPath) {
+    private Win32FilePureJava(File pPath) {
         super(pPath.getPath());
     }
 
@@ -114,14 +114,14 @@ final class Win32File extends File {
 
         if (IS_WINDOWS) {
             // Don't wrap if allready wrapped
-            if (pPath instanceof Win32File || pPath instanceof Win32Lnk) {
+            if (pPath instanceof Win32FilePureJava || pPath instanceof Win32LnkPureJava) {
                 return pPath;
             }
 
             if (pPath.exists() && pPath.getName().endsWith(".lnk")) {
                 // If Win32 .lnk, let's wrap
                 try {
-                    return new Win32Lnk(pPath);
+                    return new Win32LnkPureJava(pPath);
                 }
                 catch (IOException e) {
                     // TODO: FixMe!
@@ -131,7 +131,7 @@ final class Win32File extends File {
 
             // Wwrap even if not a .lnk, as the listFiles() methods etc,
             // could potentially return .lnk's, that we want to wrap later...
-            return new Win32File(pPath);
+            return new Win32FilePureJava(pPath);
         }
 
         return pPath;

@@ -28,12 +28,18 @@
 
 package com.twelvemonkeys.imageio.plugins.pict;
 
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.io.LittleEndianDataOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
+import java.io.UnsupportedEncodingException;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.*;
+
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.io.LittleEndianDataOutputStream;
 
 /**
  * QTBMPDecompressor
@@ -64,7 +70,7 @@ final class QTBMPDecompressor extends QTDecompressor {
     private InputStream fakeBMPHeader(final QuickTime.ImageDesc pDescription) throws IOException {
         int bmpHeaderSize = 14;
         int dibHeaderSize = 12; // 12: OS/2 V1
-        ByteArrayOutputStream out = new FastByteArrayOutputStream(bmpHeaderSize + dibHeaderSize);
+        ByteArrayOutputStream out = new FastByteArrayOutputStreamPureJava(bmpHeaderSize + dibHeaderSize);
 
         LittleEndianDataOutputStream stream = new LittleEndianDataOutputStream(out);
 

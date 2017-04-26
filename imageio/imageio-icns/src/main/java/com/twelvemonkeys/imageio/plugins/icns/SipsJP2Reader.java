@@ -28,17 +28,23 @@
 
 package com.twelvemonkeys.imageio.plugins.icns;
 
-import com.twelvemonkeys.imageio.util.IIOUtil;
-import com.twelvemonkeys.io.FileUtil;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Iterator;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.Iterator;
+
+import com.twelvemonkeys.imageio.util.IIOUtil;
+import com.twelvemonkeys.io.FileUtilPureJava;
 
 /**
  * QuickFix for OS X (where ICNS are most useful) and JPEG 2000.
@@ -165,7 +171,7 @@ final class SipsJP2Reader {
         FileOutputStream out = new FileOutputStream(tempFile);
 
         try {
-            FileUtil.copy(IIOUtil.createStreamAdapter(stream), out);
+            FileUtilPureJava.copy(IIOUtil.createStreamAdapter(stream), out);
         }
         finally {
             out.close();

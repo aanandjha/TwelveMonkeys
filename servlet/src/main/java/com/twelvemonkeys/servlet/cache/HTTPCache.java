@@ -28,20 +28,40 @@
 
 package com.twelvemonkeys.servlet.cache;
 
-import com.twelvemonkeys.io.FileUtil;
-import com.twelvemonkeys.lang.StringUtil;
-import com.twelvemonkeys.lang.Validate;
-import com.twelvemonkeys.net.MIMEUtil;
-import com.twelvemonkeys.net.HTTPUtil;
-import com.twelvemonkeys.util.LRUHashMap;
-import com.twelvemonkeys.util.NullMap;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.twelvemonkeys.io.FileUtilPureJava;
+import com.twelvemonkeys.lang.StringUtil;
+import com.twelvemonkeys.lang.Validate;
+import com.twelvemonkeys.net.HTTPUtil;
+import com.twelvemonkeys.net.MIMEUtil;
+import com.twelvemonkeys.util.LRUHashMap;
+import com.twelvemonkeys.util.NullMap;
 
 /**
  * A "simple" HTTP cache.
@@ -535,7 +555,7 @@ public class HTTPCache {
                 for (File candidate : candidates) {
                     //System.out.println("-- Candidate: " + candidates[i]);
 
-                    if (extension.equals("ANY") || extension.equals(FileUtil.getExtension(candidate))) {
+                    if (extension.equals("ANY") || extension.equals(FileUtilPureJava.getExtension(candidate))) {
                         //System.out.println("-- Candidate selected");
                         file = candidate;
                         break;
@@ -889,7 +909,7 @@ public class HTTPCache {
             File content = getCachedFile(pCacheURI, pRequest);
             if (content != null && content.exists()) {
                 // Read contents
-                byte[] contents = FileUtil.read(content);
+                byte[] contents = FileUtilPureJava.read(content);
 
                 // Read headers
                 File headers = new File(content.getAbsolutePath() + FILE_EXT_HEADERS);
@@ -915,7 +935,7 @@ public class HTTPCache {
                 }
 
                 response = new CachedResponseImpl(HttpServletResponse.SC_OK, headerMap, headerSize, contents);
-                contentCache.put(pCacheURI + '.' + FileUtil.getExtension(content), response);
+                contentCache.put(pCacheURI + '.' + FileUtilPureJava.getExtension(content), response);
             }
         }
         catch (IOException e) {

@@ -28,21 +28,30 @@
 
 package com.twelvemonkeys.imageio.plugins.iff;
 
-import com.twelvemonkeys.imageio.ImageWriterBase;
-import com.twelvemonkeys.imageio.util.IIOUtil;
-import com.twelvemonkeys.io.FastByteArrayOutputStream;
-import com.twelvemonkeys.io.enc.EncoderStream;
-import com.twelvemonkeys.io.enc.PackBitsEncoder;
-
-import javax.imageio.*;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.spi.ImageWriterSpi;
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.spi.ImageWriterSpi;
+
+import com.twelvemonkeys.imageio.ImageWriterBase;
+import com.twelvemonkeys.imageio.util.IIOUtil;
+import com.twelvemonkeys.io.FastByteArrayOutputStreamPureJava;
+import com.twelvemonkeys.io.enc.EncoderStream;
+import com.twelvemonkeys.io.enc.PackBitsEncoder;
 
 /**
  * Writer for Commodore Amiga (Electronic Arts) IFF ILBM (InterLeaved BitMap) format.
@@ -84,7 +93,7 @@ public class IFFImageWriter extends ImageWriterBase {
         processImageStarted(0);
 
         // Prepare image data to be written
-        ByteArrayOutputStream imageData = new FastByteArrayOutputStream(1024);
+        ByteArrayOutputStream imageData = new FastByteArrayOutputStreamPureJava(1024);
         packImageData(imageData, pImage.getRenderedImage(), pParam);
 
         //System.out.println("Image data: " + imageData.size());
